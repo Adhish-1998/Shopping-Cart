@@ -13,7 +13,8 @@ const createUser = async function (req,res){
         if(Object.keys(userDetail).length ==0 )
             return res.status(400).send({status: false, msg : "Request Body cannot be empty."})
         
-        let { fname, lname, email, profileImage, phone, password} = userDetail
+        let { fname, lname, email , phone, password} = userDetail
+        let file = req.files
         // let {shipping, billing} = address
         // let {Sstreet, Scity, Spin} = shipping
         // let {Bstreet, Bcity, Bpin} = billing
@@ -27,25 +28,30 @@ const createUser = async function (req,res){
         if (!validator.isValidBody(password)) { return res.status(400).send({ status: false, msg: 'Please enter the password' }) }
         // to validate the password in given length
         if (!validator.isValidpassword(password)) { return res.status(400).send({ status: false, msg: "password should be have minimum 8 character and max 15 character" }) }
-
-        // if(profileImage && profileImage.length > 0) {
-        //     let uploadUrl = await uploadFile(profileImage[0])
-        //     console.log(uploadUrl)
-        //     userDetail.profileImage = uploadUrl
+ 
+        if(file && file.length > 0) {
+            let uploadUrl = await uploadFile(file[0])
+            //console.log(uploadUrl)
+            userDetail.profileImage = uploadUrl
       
-        // }
+        }
         
         //var password = req.body.password;
 
-        // let hello 
-        bcrypt.genSalt(saltRounds, function(err, salt) {
-            bcrypt.hash(password, salt, function(err, hash) {
-            // returns hash
-            console.log(hash);
-            hello = hash
-            });
+        // let hello
+        password = await bcrypt.hash(password, saltRounds)
+                   .then((hash) => hash)
+                   
+
+        userDetail.password = password
+        // bcrypt.genSalt(saltRounds, function(err, salt) {
+        //     bcrypt.hash(password, salt, function(err, hash) {
+        //     // returns hash
+        //     console.log(hash);
+        //     hello = hash
+        //     });
            
-          });
+        //   });
         
         //userDetail.password = hello
         // console.log( hello )
@@ -89,13 +95,18 @@ const createLogin =async function (req,res){
     
     const user=await userModel.findOne({email:email,password:password})
     if(!user) {return res.status(400).send({status:false,msg:'No such user found'})}
+    
+    // if(bcrypt.compare(password, user.password )){}
 
-    let token =jwt.sign({
-        userId:user._id.toString(),
-        project: "Project-5",
-        iat:Math.floor(Date.now() / 1000),
-        exp:Math.floor(Date.now() / 1000) + 10*60*60
-    }, "Project-5 product Management ");
+        let token =jwt.sign({
+            userId:user._id.toString(),
+            project: "Project-5",
+            iat:Math.floor(Date.now() / 1000),
+            exp:Math.floor(Date.now() / 1000) + 10*60*60
+        }, "Project-5 product Management ");
+        
+
+    
     
     res.status(200).send({
         status:true,
@@ -133,7 +144,8 @@ module.exports.getUser = getUser
 
 
 const updateUser = async function (req, res) {
-    let { fname, lname, email, profileImage, phone, password , address} = req.body
+    let { fname, lname, email, phone, password , address} = req.body
+    let file = req.files
     let id = req.userId
     let obj = {}
 
@@ -142,6 +154,12 @@ const updateUser = async function (req, res) {
     if(email) obj.lname = lname
     if(phone) obj.lname = lname
     if(password) obj.lname = lname
+    if(file && file.length > 0) {
+        let uploadUrl = await uploadFile(file[0])
+        //console.log(uploadUrl)
+        obj.profileImage = uploadUrl
+  
+    }
 
     let updatedUser = await userModel.findOneAndUpdate(
        { _id: id},
@@ -154,3 +172,10 @@ const updateUser = async function (req, res) {
 
 
 module.exports.updateUser = updateUser
+
+// let Password = bcrypt.hash(data.password, saltRounds)
+//      .then((hash) => {
+//      console.log(`Hash: ${hash}`);
+//   return hash;
+// });
+// data.password = await encryptedPassword;
