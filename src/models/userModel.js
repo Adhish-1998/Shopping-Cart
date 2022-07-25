@@ -20,7 +20,8 @@ const userSchema = new mongoose.Schema({
     profileImage: {
         type: String, 
         required: true,
-        trim: true
+        trim: true,
+        default: null
     }, // s3 link
     phone: {
         type: String,
