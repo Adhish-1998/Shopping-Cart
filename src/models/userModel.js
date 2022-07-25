@@ -31,8 +31,8 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String, 
         required: true,
-        minLen: 8, 
-        maxLen: 15,
+        //minLen: 8, 
+       //maxLen: 15,
         trim: true
     }, // encrypted password
     address: {
