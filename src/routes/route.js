@@ -1,13 +1,14 @@
 const express = require('express')
 const router = express.Router()
-const {createUser} = require('../controller/controller')
+const {authenticate, authorise } = require('../middleware/auth')
+const {createUser, createLogin, getUser, updateUser} = require('../controller/controller')
 
 
 
 router.post("/register", createUser )
-//router.post("/login", )
-//router.get(" /user/:userId/profile", )
-//router.put("/user/:userId/profile", )
+router.post("/login", createLogin )
+router.get("/user/:userId/profile", authenticate, getUser )
+router.put("/user/:userId/profile", authenticate, authorise, updateUser )
 
 
 

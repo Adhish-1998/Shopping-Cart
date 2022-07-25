@@ -1,6 +1,7 @@
 const userModel = require("../models/userModel")
 const bcrypt = require('bcrypt')
 const validator = require('../validator/validator')
+const jwt = require('jsonwebtoken')
 const saltRounds = 10
 const {uploadFile} = require('../aws/config')
 
@@ -80,6 +81,11 @@ const createLogin =async function (req,res){
     const requestbody = req.body
     const { email, password } = requestbody
 
+    if (!validator.isValidBody(email)) { return res.status(400).send({ status: false, msg: 'Please enter the Email Id' }) }
+    if (!validator.isValidEmail(email)) { return res.status(400).send({ status: false, msg: 'Please enter valid emailId' }) }
+
+    if (!validator.isValidBody(password)) { return res.status(400).send({ status: false, msg: 'Please enter the password' }) }
+    if (!validator.isValidpassword(password)) { return res.status(400).send({ status: false, msg: "password should be have minimum 8 character and max 15 character" }) }
     
     const user=await userModel.findOne({email:email,password:password})
     if(!user) {return res.status(400).send({status:false,msg:'No such user found'})}
@@ -94,7 +100,11 @@ const createLogin =async function (req,res){
     res.status(200).send({
         status:true,
         message:'User login successfull',
-        data:token,
+        data:{
+            userId: user._id,
+            token : token 
+            
+        }
     })
 }
 module.exports.createLogin=createLogin
@@ -102,12 +112,45 @@ module.exports.createLogin=createLogin
 
 const getUser = async function (req,res){
     try{
-      let 
+
+    //   let token = req.headers.authorization.slice(7)
+    //   console.log(token)
+    let userId = req.params.userId
+
+    let findUser = await userModel.findOne({ _id: userId })
+    if (!findUser) return res.status(402).send({ status: false, msg: "Please enter valid userId" })
+    return res.status(200).send({status:false, msg :"User profile details", data: findUser})
     }
-    catch{
+    catch(err){
         res.status(500).send({
             status:false,
             msg:err.message
         })
 }
 }
+
+module.exports.getUser = getUser
+
+
+const updateUser = async function (req, res) {
+    let { fname, lname, email, profileImage, phone, password , address} = req.body
+    let id = req.userId
+    let obj = {}
+
+    if(fname) obj.fname = fname
+    if(lname) obj.lname = lname
+    if(email) obj.lname = lname
+    if(phone) obj.lname = lname
+    if(password) obj.lname = lname
+
+    let updatedUser = await userModel.findOneAndUpdate(
+       { _id: id},
+        obj,
+        {new :true}
+    )
+
+    return res.status(200).send({status : true, data: updatedUser})
+}
+
+
+module.exports.updateUser = updateUser
