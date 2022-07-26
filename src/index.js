@@ -6,8 +6,28 @@ const multer = require('multer')
 
 const app = express();
 app.use(bodyParser.json())
-app.use(multer().any())
+app.use(multer({
+    fileFilter: (req, file, cb) =>{
+        //console.log( file.mimetype)
+        if(file.mimetype == 'image/png' || file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg'){
+            cb(null, true)
+        }
+            
+        // cb(null, true)
+        else{
+            cb(null, false)
+            //return res.send("adfadf")
+            return cb(new Error("Bad Request"))
+        } 
 
+     }
+}).any())
+
+app.use((err,req,res,next) => {
+    if(err.message == 'Bad Request')
+        return res.status(400).send({status : false, message: 'Invalid File Format!!'})
+    next()
+})
 
 app.use('/', route)
 

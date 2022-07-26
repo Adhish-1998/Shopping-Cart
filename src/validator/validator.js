@@ -46,8 +46,16 @@ const isValidPin = function (pin) {
         return true
 }
 
+
+const isValidName = function (name) {
+    let checkName = /^[A-Za-z]+$/
+    if (checkName.test(name))
+        return true
+}
+
 module.exports = {
     isValidBody,
+    isValidName,
     isValidMobileNumber,
     isValidEmail,
     isValidObjectId,

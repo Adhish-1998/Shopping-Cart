@@ -16,11 +16,16 @@ const createUser = async function (req, res) {
         let file = req.files
         address = JSON.parse(address)
         let { shipping, billing } = address
+        let obj = {}
 
 
 
         if (!validator.isValidBody(fname)) { return res.status(400).send({ status: false, msg: 'Please enter fname' }) }
-        if (!validator.isValidBody(lname)) { return res.status(400).send({ status: false, msg: 'Please enter fname' }) }
+        if (!validator.isValidBody(lname)) { return res.status(400).send({ status: false, msg: 'Please enter lname' }) }
+
+        if (!validator.isValidName(fname)) { return res.status(400).send({ status: false, msg: 'fname should be in Alphabets' }) }
+        if (!validator.isValidName(lname)) { return res.status(400).send({ status: false, msg: 'lname should be in Alphabets' }) }
+
         if (!validator.isValidBody(email)) { return res.status(400).send({ status: false, msg: 'Please enter the Email Id' }) }
         if (!validator.isValidEmail(email)) { return res.status(400).send({ status: false, msg: 'Please enter valid emailId' }) }
 
@@ -31,7 +36,7 @@ const createUser = async function (req, res) {
         // to validate the password in given length
         if (!validator.isValidpassword(password)) { return res.status(400).send({ status: false, msg: "password should be have minimum 8 character and max 15 character" }) }
 
-        if (!file) return res.status(400).send({ status: false, msg: "File Should be Uploaded" })
+        if (file.length == 0) return res.status(400).send({ status: false, msg: "File is Missing" })
 
         //Validation of Shipping Address
         if (!validator.isValidBody(shipping.street)) { return res.status(400).send({ status: false, msg: 'Please enter Shipping street' }) }
@@ -49,15 +54,12 @@ const createUser = async function (req, res) {
 
 
 
-        if (file && file.length > 0) {
-            let uploadUrl = await uploadFile(file[0])
-            userDetail.profileImage = uploadUrl
+        //if (file && file.length > 0)  var uploadUrl = await uploadFile(file[0])
 
-        }
 
         password = await bcrypt.hash(password, saltRounds)
 
-        console.log(password)
+        
 
         const isDuplicateNumber = await userModel.find({ phone: phone })
         if (isDuplicateNumber.length != 0) { return res.status(400).send({ status: false, msg: 'This number is already exist' }) }
@@ -65,8 +67,24 @@ const createUser = async function (req, res) {
         const isDuplicateEmail = await userModel.find({ email: email })
         if (isDuplicateEmail.length != 0) { return res.status(400).send({ status: false, msg: 'This mailId is already exist' }) }
 
+        obj = {
+            fname: fname,
+            lname: lname,
+            email: email,
+            phone: phone,
+            password: password,
+            profileImage : uploadUrl
+        }
 
-        let savedUser = await userModel.create(userDetail)
+            obj["address.billing.street"]= billing.street
+            obj["address.billing.city"]= billing.city
+            obj["address.billing.pincode"]= billing.pincode
+            obj["address.shipping.street"]= shipping.street
+            obj["address.shipping.city"]= shipping.city
+            obj["address.shipping.pincode"]= shipping.pincode
+
+
+        let savedUser = await userModel.create(obj)
         return res.status(201).send({
             status: true,
             msg: "User created successfully",
@@ -169,16 +187,31 @@ const updateUser = async function (req, res) {
         obj.profileImage = uploadUrl
 
     }
-    if (billing) {
-        if (billing.street) obj["address.billing.street"] = billing.street
-        if (billing.city) obj["address.billing.city"] = billing.city
-        if (billing.pin) obj["address.billing.city"] = billing.pin
-    }
+
     if (shipping) {
-        if (shipping.street) obj["address.shipping.street"] = shipping.street
-        if (shipping.city) obj["address.shipping.city"] = shipping.city
-        if (shipping.pin) obj["address.shipping.city"] = shipping.pin
+        if (shipping.street)  obj["address.shipping.street"] = shipping.street 
+        if (shipping.city) {
+            if (!validator.isValidPin(shipping.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid Shipping Pincode.' }) }
+             obj["address.shipping.city"] = shipping.city
+             }
+        if (shipping.pincode) {
+            if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid billing Pincode.' }) }
+            obj["address.shipping.pincode"] = shipping.pincode
+         }
     }
+
+    if (billing) {
+        if (billing.street) obj["address.billing.street"] = billing.street 
+        if (billing.city) { 
+            if (!validator.isValidCity(billing.city)) { return res.status(400).send({ status: false, msg: 'Invalid billing city' }) }
+            obj["address.billing.city"] = billing.city
+         }
+        if (billing.pincode) { 
+            if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid billing Pin Code.' }) }
+            obj["address.billing.pincode"] = billing.pincode 
+        }
+    }
+    
 
     let updatedUser = await userModel.findOneAndUpdate(
         { _id: id },
@@ -196,3 +229,6 @@ module.exports = {
     getUser,
     updateUser
 }
+
+
+//Need to change msg to message

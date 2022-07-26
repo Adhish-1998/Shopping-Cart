@@ -8,7 +8,12 @@ const authenticate = function (req, res, next) {
     try {
         token = req.headers.authorization.slice(7)
         if (!token) res.status(400).send({ status: false, msg: "Please enter token" })
-        decodedToken = jwt.verify(token, "Project-5 product Management ")
+        decodedToken = jwt.verify(token, "Project-5 product Management ", function(err,token){
+            if(err){ return null}
+              else{
+                return token
+              }
+            })
         if (!decodedToken) return res.status(402).send({ status: false, msg: "Please enter valid Token " })
         req.userId = decodedToken.userId
     } catch (err) {
