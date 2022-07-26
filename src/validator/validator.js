@@ -1,12 +1,5 @@
-const validator = require('validator')
 const mongoose = require('mongoose')
-const passwordValidator = require('password-validator');
-const ObjectId = mongoose.Types.ObjectId;
 
-
-// const isvalidRequestBody = function (value) {
-//     return Object.keys(value).length > 0
-// }
 
 const isValidBody = function (value) {
     if (typeof value === 'undefined' || value === 'null') return false
@@ -41,10 +34,24 @@ const isValidpassword = function (password) {
     return false
 }
 
+const isValidCity = function (street) {
+    let checkStreet = /^[A-za-z]+$/
+    if (checkStreet.test(street))
+        return true
+}
+
+const isValidPin = function (pin) {
+    let checkPin = /^[0-9]{6}$/
+    if (checkPin.test(pin))
+        return true
+}
+
 module.exports = {
     isValidBody,
     isValidMobileNumber,
     isValidEmail,
     isValidObjectId,
     isValidpassword,
+    isValidCity,
+    isValidPin
 }

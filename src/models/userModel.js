@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         trim: true
     },
     profileImage: {
-        type: String, 
+        type: String,
         required: true,
         trim: true,
         default: null
@@ -28,26 +28,26 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true
-   }, // valid Indian mobile number}, 
+    }, // valid Indian mobile number}, 
     password: {
-        type: String, 
+        type: String,
         required: true,
-        //minLen: 8, 
-       //maxLen: 15,
+        minLen: 8,
+        maxLen: 15,
         trim: true
     }, // encrypted password
     address: {
-      shipping: {
-        street: {type: String, required : true, trim: true},
-        city: {type: String, required: true, trim: true},
-        pincode: {type : Number, required: true, trim: true}
-      },
-      billing: {
-        street: {type: String, required: true, trim: true},
-        city: {type: String, required: true, trim: true},
-        pincode: {type: Number, required: true, trim: true}
-      }
+        shipping: {
+            street: { type: String, required: true, trim: true },
+            city: { type: String, required: true, trim: true },
+            pincode: { type: Number, required: true, trim: true }
+        },
+        billing: {
+            street: { type: String, required: true, trim: true },
+            city: { type: String, required: true, trim: true },
+            pincode: { type: Number, required: true, trim: true }
+        }
     },
-},{ timestamps: true })
+}, { timestamps: true })
 
 module.exports = mongoose.model('User', userSchema)
