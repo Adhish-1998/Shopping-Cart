@@ -54,7 +54,7 @@ const createUser = async function (req, res) {
 
 
 
-        //if (file && file.length > 0)  var uploadUrl = await uploadFile(file[0])
+        if (file && file.length > 0)  var uploadUrl = await uploadFile(file[0])
 
 
         password = await bcrypt.hash(password, saltRounds)
