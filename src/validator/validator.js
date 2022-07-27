@@ -53,6 +53,12 @@ const isValidName = function (name) {
         return true
 }
 
+const isValidPrice = (price) =>{
+    let checkPrice = /^[0-9]+$/
+    if(checkPrice.test(price))
+      return true
+}
+
 module.exports = {
     isValidBody,
     isValidName,
@@ -61,5 +67,6 @@ module.exports = {
     isValidObjectId,
     isValidpassword,
     isValidCity,
-    isValidPin
+    isValidPin,
+    isValidPrice
 }

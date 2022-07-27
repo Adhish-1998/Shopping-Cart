@@ -14,7 +14,7 @@ const authenticate = function (req, res, next) {
                 return token
               }
             })
-        if (!decodedToken) return res.status(402).send({ status: false, msg: "Please enter valid Token " })
+        if (!decodedToken) return res.status(401).send({ status: false, msg: "Please enter valid Token " })
         req.userId = decodedToken.userId
     } catch (err) {
         res.status(500).send({
