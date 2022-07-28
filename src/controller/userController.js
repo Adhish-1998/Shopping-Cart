@@ -180,7 +180,7 @@ const updateUser = async function (req, res) {
     if (lname) obj.lname = lname
     if (email) obj.lname = lname
     if (phone) obj.lname = lname
-    if (password) obj.lname = lname
+    if (password) password = await bcrypt.hash(password, saltRounds)
 
     if (file && file.length > 0) {
         let uploadUrl = await uploadFile(file[0])

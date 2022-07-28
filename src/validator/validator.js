@@ -54,7 +54,7 @@ const isValidName = function (name) {
 }
 
 const isValidPrice = (price) =>{
-    let checkPrice = /^[0-9]+$/
+    let checkPrice =  /[-+][0-9]+|.[0-9]+$/
     if(checkPrice.test(price))
       return true
 }
