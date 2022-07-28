@@ -13,11 +13,14 @@ const createProduct = async (req, res) => {
     let sizes = ["S", "XS", "M", "X", "L", "XXL", "XL"]
     if (Object.keys(req.body).length == 0)
         return res.status(400).send({ status: false, msg: "Plz Enter Fields In Body !!!" });
-    console.log(req.body)
+
     let obj = {}
     //product.availableSizes = JSON.parse(product.availableSizes)
 
-    const { title, description, price, isFreeShipping, style, availableSizes, installments } = req.body;
+    let { title, description, price, isFreeShipping, style, availableSizes, installments } = req.body;
+
+
+    console.log(availableSizes)
 
     if (title || title == '') {
         if (!isValidBody(title)) return res.status(400).send({ status: false, msg: "Please enter title !!!" });
@@ -57,8 +60,13 @@ const createProduct = async (req, res) => {
 
     if (availableSizes || availableSizes == '') {
         if (!isValidBody(availableSizes)) return res.status(400).send({ status: false, msg: "Please enter Size !!!" });
-        if (!sizes.includes(availableSizes)) return res.status(400).send({ status: false, msg: "Please mention valid Size In Body !!!" });
-        obj.availableSizes = availableSizes
+        availableSizes = availableSizes.split(',').map((item) => item.trim())
+        for (let i = 0; i < availableSizes.length; i++) {
+            if (!sizes.includes(availableSizes[i]))
+                return res.status(400).send({ status: false, msg: "Please mention valid Size In Body !!!" });
+        }
+        // if (!sizes.includes(availableSizes)) return res.status(400).send({ status: false, msg: "Please mention valid Size In Body !!!" });
+      obj.availableSizes = availableSizes
     }
 
     if (installments || installments == '') {
@@ -147,7 +155,7 @@ const getProduct = async (req, res) => {
 
         // var product = await productModel.find({ $and: [obj, { price: { $gt: gt } }] }).sort({ price: -1 })
         // if (product.length == 0) return res.status(404).send({ status: false, message: "Product Not Found." })
-        if (!priceLessThan && priceLessThan != '' ) {
+        if (!priceLessThan && priceLessThan != '') {
             var product = await productModel.find({ $and: [obj, { price: { $gt: gt } }] }).sort({ price: -1 })
             if (product.length == 0) return res.status(404).send({ status: false, message: "Product Not Found." })
             return res.status(200).send({ status: true, message: "Successful", data: product })
@@ -167,7 +175,7 @@ const getProduct = async (req, res) => {
         }
     }
 
-    if (priceGreaterThan || priceLessThan){
+    if (priceGreaterThan || priceLessThan) {
         product = await productModel.find({ $and: [obj, { price: { $gt: gt, $lt: lt } }] }).sort({ price: -1 })
         if (product.length == 0) return res.status(404).send({ status: false, message: "Product Not Found." })
         return res.status(200).send({ status: true, message: "Successful", data: product })
@@ -211,7 +219,10 @@ const updateProduct = async (req, res) => {
     let file = req.files
     let { title, description, price, isFreeShipping, style, availableSizes, installments } = req.body
     let obj = { _id: id, isDeleted: false }
+    availableSizes = availableSizes.split(',').map((item) => item.trim())
+    console.log(availableSizes)
     let sizes = ["S", "XS", "M", "X", "L", "XXL", "XL"]
+
     let UpObj = {}
     //isValidBody
     if (title || title == '') {
