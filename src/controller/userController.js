@@ -14,6 +14,8 @@ const createUser = async function (req, res) {
 
         let { fname, lname, email, phone, password, address } = userDetail
         let file = req.files
+        if (!address || address == '') return res.status(400).send({status : false, message: "Please give full address of user" })
+           
         address = JSON.parse(address)
         let { shipping, billing } = address
         let obj = {}
@@ -38,28 +40,33 @@ const createUser = async function (req, res) {
 
         if (file.length == 0) return res.status(400).send({ status: false, msg: "File is Missing" })
 
-        //Validation of Shipping Address
-        if (!validator.isValidBody(shipping.street)) { return res.status(400).send({ status: false, msg: 'Please enter Shipping street' }) }
-        if (!validator.isValidBody(shipping.city)) { return res.status(400).send({ status: false, msg: 'Please enter Shipping city' }) }
-        if (!validator.isValidCity(shipping.city)) { return res.status(400).send({ status: false, msg: 'Invalid Shipping city' }) }
-        if (!validator.isValidBody(shipping.pincode)) { return res.status(400).send({ status: false, msg: 'Please enter Shipping pin' }) }
-        if (!validator.isValidPin(shipping.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid Shipping Pin Code.' }) }
+       
 
-        //Validation of Billing Address
-        if (!validator.isValidBody(billing.street)) { return res.status(400).send({ status: false, msg: 'Please enter billing street' }) }
-        if (!validator.isValidBody(billing.city)) { return res.status(400).send({ status: false, msg: 'Please enter billing city' }) }
-        if (!validator.isValidCity(billing.city)) { return res.status(400).send({ status: false, msg: 'Invalid billing city' }) }
-        if (!validator.isValidBody(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Please enter billing pin' }) }
-        if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid billing Pin Code.' }) }
+        
+
+             //Validation of Shipping Address
+            if (!validator.isValidBody(shipping.street)) { return res.status(400).send({ status: false, msg: 'Please enter Shipping street' }) }
+            if (!validator.isValidBody(shipping.city)) { return res.status(400).send({ status: false, msg: 'Please enter Shipping city' }) }
+            if (!validator.isValidCity(shipping.city)) { return res.status(400).send({ status: false, msg: 'Invalid Shipping city' }) }
+            if (!validator.isValidBody(shipping.pincode)) { return res.status(400).send({ status: false, msg: 'Please enter Shipping pin' }) }
+            if (!validator.isValidPin(shipping.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid Shipping Pin Code.' }) }
+
+            //Validation of Billing Address
+            if (!validator.isValidBody(billing.street)) { return res.status(400).send({ status: false, msg: 'Please enter billing street' }) }
+            if (!validator.isValidBody(billing.city)) { return res.status(400).send({ status: false, msg: 'Please enter billing city' }) }
+            if (!validator.isValidCity(billing.city)) { return res.status(400).send({ status: false, msg: 'Invalid billing city' }) }
+            if (!validator.isValidBody(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Please enter billing pin' }) }
+            if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid billing Pin Code.' }) }
 
 
 
-        if (file && file.length > 0)  var uploadUrl = await uploadFile(file[0])
+
+        if (file && file.length > 0) var uploadUrl = await uploadFile(file[0])
 
 
         password = await bcrypt.hash(password, saltRounds)
 
-        
+
 
         const isDuplicateNumber = await userModel.find({ phone: phone })
         if (isDuplicateNumber.length != 0) { return res.status(400).send({ status: false, msg: 'This number is already exist' }) }
@@ -73,15 +80,15 @@ const createUser = async function (req, res) {
             email: email,
             phone: phone,
             password: password,
-            profileImage : uploadUrl
+            profileImage: uploadUrl
         }
 
-            obj["address.billing.street"]= billing.street
-            obj["address.billing.city"]= billing.city
-            obj["address.billing.pincode"]= billing.pincode
-            obj["address.shipping.street"]= shipping.street
-            obj["address.shipping.city"]= shipping.city
-            obj["address.shipping.pincode"]= shipping.pincode
+        obj["address.billing.street"] = billing.street
+        obj["address.billing.city"] = billing.city
+        obj["address.billing.pincode"] = billing.pincode
+        obj["address.shipping.street"] = shipping.street
+        obj["address.shipping.city"] = shipping.city
+        obj["address.shipping.pincode"] = shipping.pincode
 
 
         let savedUser = await userModel.create(obj)
@@ -170,7 +177,6 @@ const getUser = async function (req, res) {
 
 const updateUser = async function (req, res) {
     let { fname, lname, email, phone, password, address } = req.body
-    let { shipping, billing } = address
     let file = req.files
     let id = req.userId
 
@@ -188,31 +194,37 @@ const updateUser = async function (req, res) {
 
     }
 
-    if (shipping) {
-        if (shipping.street)  obj["address.shipping.street"] = shipping.street 
-        if (shipping.city) {
-            if (!validator.isValidPin(shipping.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid Shipping Pincode.' }) }
-             obj["address.shipping.city"] = shipping.city
-             }
-        if (shipping.pincode) {
-            if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid billing Pincode.' }) }
-            obj["address.shipping.pincode"] = shipping.pincode
-         }
-    }
+    if(address){
 
-    if (billing) {
-        if (billing.street) obj["address.billing.street"] = billing.street 
-        if (billing.city) { 
-            if (!validator.isValidCity(billing.city)) { return res.status(400).send({ status: false, msg: 'Invalid billing city' }) }
-            obj["address.billing.city"] = billing.city
-         }
-        if (billing.pincode) { 
-            if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid billing Pin Code.' }) }
-            obj["address.billing.pincode"] = billing.pincode 
+        let { shipping, billing } = address
+        if (shipping) {
+            if (shipping.street) obj["address.shipping.street"] = shipping.street
+            if (shipping.city) {
+                if (!validator.isValidPin(shipping.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid Shipping Pincode.' }) }
+                obj["address.shipping.city"] = shipping.city
+            }
+            if (shipping.pincode) {
+                if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid billing Pincode.' }) }
+                obj["address.shipping.pincode"] = shipping.pincode
+            }
         }
-    }
     
+        if (billing) {
+            if (billing.street) obj["address.billing.street"] = billing.street
+            if (billing.city) {
+                if (!validator.isValidCity(billing.city)) { return res.status(400).send({ status: false, msg: 'Invalid billing city' }) }
+                obj["address.billing.city"] = billing.city
+            }
+            if (billing.pincode) {
+                if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid billing Pin Code.' }) }
+                obj["address.billing.pincode"] = billing.pincode
+            }
+        }
+    
+    
+    }
 
+   
     let updatedUser = await userModel.findOneAndUpdate(
         { _id: id },
         obj,

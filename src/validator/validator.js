@@ -53,11 +53,24 @@ const isValidName = function (name) {
         return true
 }
 
+const validProdName = (name) => {
+    let checkProdName = /^[A-Za-z]+|[A-Za-z]+\[0-9]+$/
+    if(checkProdName.test(name))
+      return true
+}
+
+
+
 const isValidPrice = (price) =>{
     let checkPrice =  /[-+][0-9]+|.[0-9]+$/
     if(checkPrice.test(price))
       return true
 }
+
+
+
+
+
 
 module.exports = {
     isValidBody,
@@ -68,5 +81,6 @@ module.exports = {
     isValidpassword,
     isValidCity,
     isValidPin,
-    isValidPrice
+    isValidPrice,
+    validProdName
 }

@@ -9,7 +9,7 @@ app.use(bodyParser.json())
 app.use(multer({
     fileFilter: (req, file, cb) =>{
         //console.log( file.mimetype)
-        if(file.mimetype == 'image/png' || file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg'){
+        if(file.mimetype == 'image/png' || file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg' || file.mimetype == 'image/jfif' ){
             cb(null, true)
         }
             
