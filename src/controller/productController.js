@@ -178,6 +178,7 @@ const updateProduct = async (req, res) => {
         if (!isValidBody(description)) return res.status(400).send({ status: false, msg: "Please enter Description !!!" });
         UpObj.description = description
     } 
+
     if (price || price == '') {
         if (!isValidBody(price)) return res.status(400).send({ status: false, msg: "Please enter price !!!" });
         if (!isValidPrice(price)) return res.status(400).send({ status: false, msg: "Price Must be Number!!!" });
@@ -195,7 +196,7 @@ const updateProduct = async (req, res) => {
    
     //if (file.length == 0) return res.status(400).send({ status: false, msg: "Please Enter Product Image" })
 
-    if (file && file.length > 0) obj.productImage = await uploadFile(file[0])
+    if (file && file.length > 0) UpObj.productImage = await uploadFile(file[0])
 
     if (style || style == '') {
         if (!isValidBody(style)) return res.status(400).send({ status: false, msg: "Please enter style !!!" });

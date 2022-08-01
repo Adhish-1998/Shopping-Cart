@@ -3,7 +3,7 @@ const router = express.Router()
 const {authenticate, authorise } = require('../middleware/auth')
 const {createUser, createLogin, getUser, updateUser} = require('../controller/userController')
 const {createProduct, getProduct, getProductById, updateProduct, deleteById} = require('../controller/productController')
-
+const {createCart, getCart, updateCart, deleteCart} = require('../controller/cartController')
 
 //-------------For USER------------------//
 router.post("/register", createUser )
@@ -18,6 +18,11 @@ router.get("/products/:productId", getProductById)
 router.put("/products/:productId", updateProduct)
 router.delete("/products/:productId", deleteById)
 
+//-------For Cart----------//
+router.post("/users/:userId/cart", createCart )
+router.get("/users/:userId/cart", getCart )
+router.put("/users/:userId/cart", updateCart )
+router.delete("/users/:userId/cart", deleteCart )
 
 router.all("/*", function (req, res) {
     res.status(404).send({

@@ -63,6 +63,7 @@ const validProdName = (name) => {
 
 const isValidPrice = (price) =>{
     let checkPrice =  /[-+][0-9]+|.[0-9]+$/
+    if(price == 0) return false
     if(checkPrice.test(price))
       return true
 }
