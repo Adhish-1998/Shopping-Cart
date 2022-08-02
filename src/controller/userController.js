@@ -10,7 +10,7 @@ const createUser = async function (req, res) {
     try {
         let userDetail = req.body
         if (Object.keys(userDetail).length == 0)
-            return res.status(400).send({ status: false, msg: "Request Body cannot be empty." })
+            return res.status(400).send({ status: false, message: "Request Body cannot be empty." })
 
         let { fname, lname, email, phone, password, address } = userDetail
         let file = req.files
@@ -22,41 +22,41 @@ const createUser = async function (req, res) {
 
 
 
-        if (!validator.isValidBody(fname)) { return res.status(400).send({ status: false, msg: 'Please enter fname' }) }
-        if (!validator.isValidBody(lname)) { return res.status(400).send({ status: false, msg: 'Please enter lname' }) }
+        if (!validator.isValidBody(fname)) { return res.status(400).send({ status: false, message: 'Please enter fname' }) }
+        if (!validator.isValidBody(lname)) { return res.status(400).send({ status: false, message: 'Please enter lname' }) }
 
-        if (!validator.isValidName(fname)) { return res.status(400).send({ status: false, msg: 'fname should be in Alphabets' }) }
-        if (!validator.isValidName(lname)) { return res.status(400).send({ status: false, msg: 'lname should be in Alphabets' }) }
+        if (!validator.isValidName(fname)) { return res.status(400).send({ status: false, message: 'fname should be in Alphabets' }) }
+        if (!validator.isValidName(lname)) { return res.status(400).send({ status: false, message: 'lname should be in Alphabets' }) }
 
-        if (!validator.isValidBody(email)) { return res.status(400).send({ status: false, msg: 'Please enter the Email Id' }) }
-        if (!validator.isValidEmail(email)) { return res.status(400).send({ status: false, msg: 'Please enter valid emailId' }) }
+        if (!validator.isValidBody(email)) { return res.status(400).send({ status: false, message: 'Please enter the Email Id' }) }
+        if (!validator.isValidEmail(email)) { return res.status(400).send({ status: false, message: 'Please enter valid emailId' }) }
 
         //profileImage
-        if (!validator.isValidBody(phone)) { return res.status(400).send({ status: false, msg: 'Please enter the Mobile Number' }) }
-        if (!validator.isValidMobileNumber(phone)) { return res.status(400).send({ status: false, msg: 'Please enter valid Mobile Number' }) }
-        if (!validator.isValidBody(password)) { return res.status(400).send({ status: false, msg: 'Please enter the password' }) }
+        if (!validator.isValidBody(phone)) { return res.status(400).send({ status: false, message: 'Please enter the Mobile Number' }) }
+        if (!validator.isValidMobileNumber(phone)) { return res.status(400).send({ status: false, message: 'Please enter valid Mobile Number' }) }
+        if (!validator.isValidBody(password)) { return res.status(400).send({ status: false, message: 'Please enter the password' }) }
         // to validate the password in given length
-        if (!validator.isValidpassword(password)) { return res.status(400).send({ status: false, msg: "password should be have minimum 8 character and max 15 character" }) }
+        if (!validator.isValidpassword(password)) { return res.status(400).send({ status: false, message: "password should be have minimum 8 character and max 15 character" }) }
 
-        if (file.length == 0) return res.status(400).send({ status: false, msg: "File is Missing" })
+        if (file.length == 0) return res.status(400).send({ status: false, message: "File is Missing" })
 
        
 
         
 
              //Validation of Shipping Address
-            if (!validator.isValidBody(shipping.street)) { return res.status(400).send({ status: false, msg: 'Please enter Shipping street' }) }
-            if (!validator.isValidBody(shipping.city)) { return res.status(400).send({ status: false, msg: 'Please enter Shipping city' }) }
-            if (!validator.isValidCity(shipping.city)) { return res.status(400).send({ status: false, msg: 'Invalid Shipping city' }) }
-            if (!validator.isValidBody(shipping.pincode)) { return res.status(400).send({ status: false, msg: 'Please enter Shipping pin' }) }
-            if (!validator.isValidPin(shipping.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid Shipping Pin Code.' }) }
+            if (!validator.isValidBody(shipping.street)) { return res.status(400).send({ status: false, message: 'Please enter Shipping street' }) }
+            if (!validator.isValidBody(shipping.city)) { return res.status(400).send({ status: false, message: 'Please enter Shipping city' }) }
+            if (!validator.isValidCity(shipping.city)) { return res.status(400).send({ status: false, message: 'Invalid Shipping city' }) }
+            if (!validator.isValidBody(shipping.pincode)) { return res.status(400).send({ status: false, message: 'Please enter Shipping pin' }) }
+            if (!validator.isValidPin(shipping.pincode)) { return res.status(400).send({ status: false, message: 'Invalid Shipping Pin Code.' }) }
 
             //Validation of Billing Address
-            if (!validator.isValidBody(billing.street)) { return res.status(400).send({ status: false, msg: 'Please enter billing street' }) }
-            if (!validator.isValidBody(billing.city)) { return res.status(400).send({ status: false, msg: 'Please enter billing city' }) }
-            if (!validator.isValidCity(billing.city)) { return res.status(400).send({ status: false, msg: 'Invalid billing city' }) }
-            if (!validator.isValidBody(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Please enter billing pin' }) }
-            if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid billing Pin Code.' }) }
+            if (!validator.isValidBody(billing.street)) { return res.status(400).send({ status: false, message: 'Please enter billing street' }) }
+            if (!validator.isValidBody(billing.city)) { return res.status(400).send({ status: false, message: 'Please enter billing city' }) }
+            if (!validator.isValidCity(billing.city)) { return res.status(400).send({ status: false, message: 'Invalid billing city' }) }
+            if (!validator.isValidBody(billing.pincode)) { return res.status(400).send({ status: false, message: 'Please enter billing pin' }) }
+            if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, message: 'Invalid billing Pin Code.' }) }
 
 
 
@@ -69,10 +69,10 @@ const createUser = async function (req, res) {
 
 
         const isDuplicateNumber = await userModel.find({ phone: phone })
-        if (isDuplicateNumber.length != 0) { return res.status(400).send({ status: false, msg: 'This number is already exist' }) }
+        if (isDuplicateNumber.length != 0) { return res.status(400).send({ status: false, message: 'This number is already exist' }) }
 
         const isDuplicateEmail = await userModel.find({ email: email })
-        if (isDuplicateEmail.length != 0) { return res.status(400).send({ status: false, msg: 'This mailId is already exist' }) }
+        if (isDuplicateEmail.length != 0) { return res.status(400).send({ status: false, message: 'This mailId is already exist' }) }
 
         obj = {
             fname: fname,
@@ -94,36 +94,34 @@ const createUser = async function (req, res) {
         let savedUser = await userModel.create(obj)
         return res.status(201).send({
             status: true,
-            msg: "User created successfully",
+            message: "User created successfully",
             Data: savedUser
         })
     }
     catch (err) {
         res.status(500).send({
             status: false,
-            msg: err.message
+            message: err.message
         })
     }
 }
 
 
-// if (!Validator.isValidBody(title)) { return res.status(400).send({ status: false, msg: 'Please enter the title' }) }
-//         // to validate the enum 
-// if (["Mr", "Mrs", "Miss"].indexOf(title) == -1) { return res.status(400).send({ status: false, msg: 'Please select the title in Mr Mrs & Miss' }) }
+
 
 
 const createLogin = async function (req, res) {
     const requestbody = req.body
     const { email, password } = requestbody
 
-    if (!validator.isValidBody(email)) { return res.status(400).send({ status: false, msg: 'Please enter the Email Id' }) }
-    if (!validator.isValidEmail(email)) { return res.status(400).send({ status: false, msg: 'Please enter valid emailId' }) }
+    if (!validator.isValidBody(email)) { return res.status(400).send({ status: false, message: 'Please enter the Email Id' }) }
+    if (!validator.isValidEmail(email)) { return res.status(400).send({ status: false, message: 'Please enter valid emailId' }) }
 
-    if (!validator.isValidBody(password)) { return res.status(400).send({ status: false, msg: 'Please enter the password' }) }
-    if (!validator.isValidpassword(password)) { return res.status(400).send({ status: false, msg: "password should be have minimum 8 character and max 15 character" }) }
+    if (!validator.isValidBody(password)) { return res.status(400).send({ status: false, message: 'Please enter the password' }) }
+    if (!validator.isValidpassword(password)) { return res.status(400).send({ status: false, message: "password should be have minimum 8 character and max 15 character" }) }
 
     const user = await userModel.findOne({ email: email })
-    if (!user) { return res.status(400).send({ status: false, msg: 'No such user found' }) }
+    if (!user) { return res.status(400).send({ status: false, message: 'No such user found' }) }
 
     let result = await bcrypt.compare(password, user.password)
 
@@ -163,13 +161,13 @@ const getUser = async function (req, res) {
 
         let findUser = await userModel.findOne({ _id: userId })
         console.log(findUser)
-        if (!findUser) return res.status(402).send({ status: false, msg: "Please enter valid userId" })
-        return res.status(200).send({ status: false, msg: "User profile details", data: findUser })
+        if (!findUser) return res.status(402).send({ status: false, message: "Please enter valid userId" })
+        return res.status(200).send({ status: false, message: "User profile details", data: findUser })
     }
     catch (err) {
         res.status(500).send({
             status: false,
-            msg: err.message
+            message: err.message
         })
     }
 }
@@ -200,11 +198,11 @@ const updateUser = async function (req, res) {
         if (shipping) {
             if (shipping.street) obj["address.shipping.street"] = shipping.street
             if (shipping.city) {
-                if (!validator.isValidPin(shipping.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid Shipping Pincode.' }) }
+                if (!validator.isValidPin(shipping.pincode)) { return res.status(400).send({ status: false, message: 'Invalid Shipping Pincode.' }) }
                 obj["address.shipping.city"] = shipping.city
             }
             if (shipping.pincode) {
-                if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid billing Pincode.' }) }
+                if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, message: 'Invalid billing Pincode.' }) }
                 obj["address.shipping.pincode"] = shipping.pincode
             }
         }
@@ -212,11 +210,11 @@ const updateUser = async function (req, res) {
         if (billing) {
             if (billing.street) obj["address.billing.street"] = billing.street
             if (billing.city) {
-                if (!validator.isValidCity(billing.city)) { return res.status(400).send({ status: false, msg: 'Invalid billing city' }) }
+                if (!validator.isValidCity(billing.city)) { return res.status(400).send({ status: false, message: 'Invalid billing city' }) }
                 obj["address.billing.city"] = billing.city
             }
             if (billing.pincode) {
-                if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, msg: 'Invalid billing Pin Code.' }) }
+                if (!validator.isValidPin(billing.pincode)) { return res.status(400).send({ status: false, message: 'Invalid billing Pin Code.' }) }
                 obj["address.billing.pincode"] = billing.pincode
             }
         }
@@ -241,6 +239,3 @@ module.exports = {
     getUser,
     updateUser
 }
-
-
-//Need to change msg to message

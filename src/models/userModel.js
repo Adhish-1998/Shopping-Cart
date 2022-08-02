@@ -22,20 +22,20 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
         default: null
-    }, // s3 link
+    }, 
     phone: {
         type: String,
         required: true,
         unique: true,
         trim: true
-    }, // valid Indian mobile number}, 
+    },
     password: {
         type: String,
         required: true,
         minLen: 8,
         maxLen: 15,
         trim: true
-    }, // encrypted password
+    },
     address: {
         shipping: {
             street: { type: String, required: true, trim: true },

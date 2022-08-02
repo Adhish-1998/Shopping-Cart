@@ -9,23 +9,10 @@ const cartSchema = new mongoose.Schema({
         trim: true,
         unique: true
     },
-    items: /*[Object],*/[{
-        productId: {type: ObjectId, ref: 'Product', required: true},
-        quantity: {type: Number, required: true, min: 1}
-      }],
-  
-        // [{
-        //     productId: {
-        //         type: ObjectId,
-        //         required: true,
-        //         ref: "product",
-        //         trim: true
-        //     },
-        //     quantity: {
-        //         type: Number,
-        //         required: true
-        //     },
-        // }],
+    items: [{
+        productId: { type: ObjectId, ref: 'product', required: true },
+        quantity: { type: Number, required: true, min: 1 }
+    }],
     totalPrice: {
         type: Number,
         required: true
