@@ -35,7 +35,7 @@ const authorise = async function (req, res, next) {
         } else {
             return res.status(400).send({
                 status: false,
-                msg: "invalid login credentials"
+                message: "Given User Id is not matched with login user"
             })
         }
     } catch (err) {
