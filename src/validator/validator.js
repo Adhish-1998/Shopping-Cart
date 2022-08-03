@@ -15,7 +15,7 @@ const isValidMobileNumber = function (mobile) {
     return false;
 }
 const isValidEmail = function (email) {
-    let checkemail = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/
+    let checkemail = /^\w+([\.-]?\w+)@[a-z]\w+([\.-]?\w+)(\.\w{2,3})+$/
     if (checkemail.test(email)) {
         return true;
     }

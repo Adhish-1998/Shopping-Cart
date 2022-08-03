@@ -132,7 +132,7 @@ const getProduct = async (req, res) => {
     if(!isValidBody(priceSort)) return res.status(400).send({ status: false, message: "Please enter priceSort !!!" });
      if(!(priceSort == -1 || priceSort == 1)) return res.status(400).send({ status: false, message: "Please enter 1 for Ascending order or -1 for Descending Order !!!" });
 
-    product = await productModel.find(obj).sort({ price: priceSort })
+    product = await productModel.find(obj).sort({ price: priceSort})
     if (product.length == 0) return res.status(404).send({ status: false, message: "Product Not Found." })
     return res.status(200).send({ status: true, message: "Successful", data: product })
 
@@ -145,6 +145,7 @@ const getProductById = async (req, res) => {
 
     let id = req.params.productId
     if (id == ':productId') return res.status(400).send({ status: false, message: "Please Enter Product Id" })
+    if(!isValidObjectId(id)) return res.status(400).send({status : false, message: "Please Enter Valid productId."})
     let obj = { _id: id, isDeleted: false }
     let product = await productModel.findOne(obj)
     if (!product) return res.status(404).send({ status: false, message: "Product Not Found !!" })
@@ -158,6 +159,7 @@ const updateProduct = async (req, res) => {
 
     let id = req.params.productId
     if (id == ':productId') return res.status(400).send({ status: false, message: "Please Enter Product Id" })
+    if(!isValidObjectId(id)) return res.status(400).send({status : false, message: "Please Enter Valid productId."})
 
     let file = req.files
     let { title, description, price, isFreeShipping, style, availableSizes, installments } = req.body
@@ -169,7 +171,7 @@ const updateProduct = async (req, res) => {
     
     if (title || title == '') {
         if (!isValidBody(title)) return res.status(400).send({ status: false, message: "Please enter title !!!" });
-        if (!isValidName(title)) return res.status(400).send({ status: false, message: "Please mention valid title !!!" });
+        if (!validProdName(title)) return res.status(400).send({ status: false, message: "Please mention valid title !!!" });
         UpObj.title = title
     }
 

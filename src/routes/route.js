@@ -8,7 +8,7 @@ const {createCart, getCart, updateCart, deleteCart} = require('../controller/car
 //-------------For USER------------------//
 router.post("/register", createUser )
 router.post("/login", createLogin )
-router.get("/user/:userId/profile", authenticate, getUser )
+router.get("/user/:userId/profile", authenticate,authorise, getUser )
 router.put("/user/:userId/profile", authenticate, authorise, updateUser )
 
 //-------------For Product-------------//

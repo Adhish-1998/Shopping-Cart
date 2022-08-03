@@ -158,10 +158,10 @@ const getUser = async function (req, res) {
     try {
 
         let userId = req.params.userId
-
+        if (userId === ":userId") return res.status(400).send({ status: false, message: "Please enter userId" })
+        if(!validator. isValidObjectId(userId)) return res.status(400).send({status : false, message: "Please Enter Valid UserId."})
         let findUser = await userModel.findOne({ _id: userId })
-        console.log(findUser)
-        if (!findUser) return res.status(402).send({ status: false, message: "Please enter valid userId" })
+        if (!findUser) return res.status(404).send({ status: false, message: "User Not Found" })
         return res.status(200).send({ status: false, message: "User profile details", data: findUser })
     }
     catch (err) {
@@ -174,6 +174,8 @@ const getUser = async function (req, res) {
 
 
 const updateUser = async function (req, res) {
+    if (Object.keys(req.body).length == 0)
+            return res.status(400).send({ status: false, message: "atleast one field required for update." })
     let { fname, lname, email, phone, password, address } = req.body
     let file = req.files
     let id = req.userId
