@@ -1,14 +1,17 @@
 const cartModel = require('../models/cartModel')
 const userModel = require('../models/userModel')
 const productModel = require('../models/productModel')
-const { isValidObjectId } = require('../validator/validator')
+const { isValidObjectId, isValidBody } = require('../validator/validator')
 
 const createCart = async (req, res) => {
+    if (Object.keys(req.body).length == 0)
+        return res.status(400).send({ status: false, message: "Request Body cannot be empty." })
 
     let { cartId, productId, quantity } = req.body
     let userId = req.params.userId
 
     if (!quantity) quantity = 1
+    if(!isValidBody(productId)) return res.status(400).send({status: false, message: "Enter Product Id."})
     if (!isValidObjectId(productId)) return res.status(400).send({ status: false, message: "Enter Valid Product Id." })
 
 
@@ -20,7 +23,7 @@ const createCart = async (req, res) => {
 
     if (cartId) {
 
-        if (isValidObjectId(cartId)) return res.status(400).send({ status: false, message: "Enter Valid Cart Id." })
+        if (!isValidObjectId(cartId)) return res.status(400).send({ status: false, message: "Enter Valid Cart Id." })
         let cartExist = await cartModel.findOne({ _id: cartId }).select({ _id: 0, items: 1, totalPrice: 1, totalItems: 1 })
         if (cartExist) {
 
@@ -70,7 +73,7 @@ const createCart = async (req, res) => {
             let cart = await cartModel.create(obj)
             return res.status(201).send({ status: true, message: "Successful", data: cart })
 
-        } else return res.status(200).send({ status: true, message: "Enter CartId Please!!" })
+        } else return res.status(400).send({ status: true, message: "Enter CartId Please!!" })
 
 
     }
@@ -82,7 +85,7 @@ const createCart = async (req, res) => {
 const getCart = async function (req, res) {
     try {
 
-        let findCart = await cartModel.findOne({ userId: userId }).populate("items.productId")
+        let findCart = await cartModel.findOne({ userId: req.params.userId }).populate("items.productId")
         if (!findCart) {
             return res.status(400).send({ status: false, message: "Cart does not exist" })
         }
@@ -115,6 +118,8 @@ const updateCart = async (req, res) => {
 
     let totalAmount = cart.totalPrice - product.price;
     let arr = cart.items;
+    let totalItems = cart.totalItems
+
 
     if (removeProduct == 1) {
         for (i in arr) {
@@ -122,13 +127,15 @@ const updateCart = async (req, res) => {
             if (arr[i].productId.toString() == productId) {
 
                 arr[i].quantity = arr[i].quantity - 1;
-                if (arr[i].quantity < 1)
+                if (arr[i].quantity < 1){
+                    arr = []
+                    totalItems=0
                     await cartModel.findOneAndUpdate({ _id: cartId }, { $pull: { items: { productId: productId } } }, { new: true });
-
+                }
             }
         }
 
-        let datas = await cartModel.findOneAndUpdate({ _id: cartId }, { items: arr, totalPrice: totalAmount }, { new: true });
+        let datas = await cartModel.findOneAndUpdate({ _id: cartId }, { items: arr, totalPrice: totalAmount,totalItems:totalItems }, { new: true });
         return res.status(200).send({ status: true, message: `${productId} quantity is been reduced By 1`, data: datas });
     }
     if (removeProduct == 0) {
@@ -152,10 +159,10 @@ const updateCart = async (req, res) => {
 const deleteCart = async (req, res) => {
     try {
 
-        let checkCart = await cartModel.findOne({ userId: userId })
+        let checkCart = await cartModel.findOne({ userId: req.params.userId })
         if (!checkCart) return res.status(404).send({ status: false, message: "Cart does Not Exist With This User" })
 
-        await cartModel.findOneAndUpdate({ userId: userId }, { $set: { items: [], totalPrice: 0, totalItems: 0 } }, { new: true })
+        await cartModel.findOneAndUpdate({ userId: req.params.userId }, { $set: { items: [], totalPrice: 0, totalItems: 0 } }, { new: true })
 
         return res.status(204).send()
     }
