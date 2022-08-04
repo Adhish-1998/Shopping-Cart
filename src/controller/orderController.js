@@ -23,6 +23,7 @@ const createOrder = async (req,res) =>{
 
     let cart = await cartModel.findOne({_id: cartId})
     if(!cart) return res.status(404).send({status:false, message: "Cart Does not Exist."})
+    if(cart.totalItems == 0) return res.status(200).send({status: true, message : "Please Add Product First, Cart is Empty. "})
 
     obj.items = cart.items
     obj.totalPrice = cart.totalPrice
@@ -49,8 +50,10 @@ const updateOrder = async (req, res) => {
      
     if(!statuses.includes(status)) return res.status(400).send({status: false, message: "Invalid Status !!!"})
 
-    let order = await orderModel.findOne({_id:orderId})
+    let order = await orderModel.findOne({_id:orderId, status:"pending"})
     if(!order) return res.status(404).send({status: false, message: "Order Does not Exist"})
+    let cart = await cartModel.findOne({userId: req.params.userId})
+    if(!cart) res.status(404).send({status:false, message: "Cart Does not Exist or Deleted."})
 
      if(order.cancellable == false && status == 'cancelled') return res.status(400).send({status: false, message : "Your Order Cannot be Cancelled"})
     let updatedOrder = await orderModel.findOneAndUpdate({_id: orderId}, {status : status}, {new:true})

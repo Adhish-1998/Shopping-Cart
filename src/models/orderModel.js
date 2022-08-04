@@ -6,8 +6,7 @@ const orderSchema = new mongoose.Schema({
         type: ObjectId,
         required: true,
         ref: "user",
-        trim: true,
-        unique: true
+        trim: true
     },
     items:
         [{

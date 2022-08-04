@@ -116,7 +116,7 @@ const createUser = async function (req, res) {
 
 const createLogin = async function (req, res) {
 
-    if (Object.keys(userDetail).length == 0)
+    if (Object.keys(req.body).length == 0)
        return res.status(400).send({ status: false, message: "Enter Login Credentials." })
 
     const requestbody = req.body
