@@ -26,8 +26,8 @@ router.put("/users/:userId/cart", authenticate, authorise, updateCart )
 router.delete("/users/:userId/cart", authenticate, authorise, deleteCart )
 
 //-------For Cart----------//
-router.post("/users/:userId/orders", createOrder)
-router.put("/users/:userId/orders", updateOrder)
+router.post("/users/:userId/orders", authenticate, authorise, createOrder)
+router.put("/users/:userId/orders", authenticate, authorise, updateOrder)
 
 router.all("/*", function (req, res) {
     res.status(404).send({
