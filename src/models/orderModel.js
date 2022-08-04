@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
-const cartSchema = new mongoose.Schema({
+const orderSchema = new mongoose.Schema({
     userId: {
         type: ObjectId,
         required: true,
@@ -30,7 +30,25 @@ const cartSchema = new mongoose.Schema({
     totalItems: {
         type: Number,
         required: true
-    }
+    },
+    totalQuantity:{
+        type : Number, 
+        required: true,
+    },
+    cancellable : {
+        type: Boolean,
+        default: true
+    },
+    status : {
+        type : String,
+        enum: ['pending', 'completed', 'cancelled'],
+        default: 'pending'
+    },
+    isDeleted:{
+        type: Boolean,
+        dafault: false
+    },
+    deletedAt: Date,
 }, { timestamps: true });
 
-module.exports = mongoose.model('cart', cartSchema);
+module.exports = mongoose.model('order', orderSchema);

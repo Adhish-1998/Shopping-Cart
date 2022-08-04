@@ -45,6 +45,8 @@ const createUser = async function (req, res) {
         
 
              //Validation of Shipping Address
+            if(!shipping) return res.status(400).send({status: false, message: "Enter Shipping Address."})
+
             if (!validator.isValidBody(shipping.street)) { return res.status(400).send({ status: false, message: 'Please enter Shipping street' }) }
             if (!validator.isValidBody(shipping.city)) { return res.status(400).send({ status: false, message: 'Please enter Shipping city' }) }
             if (!validator.isValidCity(shipping.city)) { return res.status(400).send({ status: false, message: 'Invalid Shipping city' }) }
@@ -52,6 +54,8 @@ const createUser = async function (req, res) {
             if (!validator.isValidPin(shipping.pincode)) { return res.status(400).send({ status: false, message: 'Invalid Shipping Pin Code.' }) }
 
             //Validation of Billing Address
+            if(!billing) return res.status(400).send({status: false, message: "Enter Billing Address."})
+
             if (!validator.isValidBody(billing.street)) { return res.status(400).send({ status: false, message: 'Please enter billing street' }) }
             if (!validator.isValidBody(billing.city)) { return res.status(400).send({ status: false, message: 'Please enter billing city' }) }
             if (!validator.isValidCity(billing.city)) { return res.status(400).send({ status: false, message: 'Invalid billing city' }) }
@@ -111,6 +115,10 @@ const createUser = async function (req, res) {
 
 
 const createLogin = async function (req, res) {
+
+    if (Object.keys(userDetail).length == 0)
+       return res.status(400).send({ status: false, message: "Enter Login Credentials." })
+
     const requestbody = req.body
     const { email, password } = requestbody
 

@@ -7,7 +7,7 @@ const { isValidBody, isValidName, isValidPrice, isValidObjectId, validProdName }
 
 const createProduct = async (req, res) => {
     try {
-        let product = req.body
+        
         let file = req.files
         let sizes = ["S", "XS", "M", "X", "L", "XXL", "XL"]
         if (Object.keys(req.body).length == 0)
