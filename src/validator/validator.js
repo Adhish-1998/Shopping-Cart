@@ -48,7 +48,7 @@ const isValidPin = function (pin) {
 
 
 const isValidName = function (name) {
-    let checkName = /^[A-Za-z]+$/
+    let checkName = /^[A-Z a-z]+$/
     if (checkName.test(name))
         return true
 }

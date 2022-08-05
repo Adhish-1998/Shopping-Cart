@@ -14,15 +14,18 @@ const createProduct = async (req, res) => {
             return res.status(400).send({ status: false, message: "Plz Enter Fields In Body !!!" });
 
         let obj = {}
-        console.log(file)
+
 
         let { title, description, price, currencyId, currencyFormat, isFreeShipping, style, availableSizes, installments } = req.body;
 
         if (!isValidBody(title)) return res.status(400).send({ status: false, message: "Please enter title !!!" });
+        else title = title.trim().split(" ").filter((word) => word).join(' ')
+
         if (!validProdName(title)) return res.status(400).send({ status: false, message: "Please mention valid title In Body !!!" });
         obj.title = title
 
         if (!isValidBody(description)) return res.status(400).send({ status: false, message: "Please enter description !!!" });
+        
         obj.description = description
 
         if (!isValidBody(price)) return res.status(400).send({ status: false, message: "Please enter price !!!" });
@@ -50,6 +53,8 @@ const createProduct = async (req, res) => {
 
         if (style || style == '') {
             if (!isValidBody(style)) return res.status(400).send({ status: false, message: "Please enter style !!!" });
+            else style = style.trim().split(" ").filter((word)=>word).join('')
+
             if (!isValidName(style)) return res.status(400).send({ status: false, message: "Please valid style !!!" });
             obj.style = style
         }
