@@ -50,8 +50,11 @@ const updateOrder = async (req, res) => {
      
     if(!statuses.includes(status)) return res.status(400).send({status: false, message: "Invalid Status !!!"})
 
-    let order = await orderModel.findOne({_id:orderId, status:"pending"})
+    let order = await orderModel.findOne({_id:orderId})
     if(!order) return res.status(404).send({status: false, message: "Order Does not Exist"})
+
+    if(order.status == 'completed') return res.status(200).send({status: true, message: "Order Already Processed"})
+    if(order.status == 'cancelled') return res.status(200).send({status: true, message: "Order is Already cancelled."})
     let cart = await cartModel.findOne({userId: req.params.userId})
     if(!cart) res.status(404).send({status:false, message: "Cart Does not Exist or Deleted."})
 

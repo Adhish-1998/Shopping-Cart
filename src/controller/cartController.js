@@ -11,7 +11,7 @@ const createCart = async (req, res) => {
     let userId = req.params.userId
 
     if (!quantity) quantity = 1
-    if(!isValidBody(productId)) return res.status(400).send({status: false, message: "Enter Product Id."})
+    if (!isValidBody(productId)) return res.status(400).send({ status: false, message: "Enter Product Id." })
     if (!isValidObjectId(productId)) return res.status(400).send({ status: false, message: "Enter Valid Product Id." })
 
 
@@ -127,15 +127,18 @@ const updateCart = async (req, res) => {
             if (arr[i].productId.toString() == productId) {
 
                 arr[i].quantity = arr[i].quantity - 1;
-                if (arr[i].quantity < 1){
-                    arr = []
-                    totalItems=0
-                    await cartModel.findOneAndUpdate({ _id: cartId }, { $pull: { items: { productId: productId } } }, { new: true });
+              
+                if (arr[i].quantity < 1) {
+                    totalItems--
+                    let cd = await cartModel.findOneAndUpdate({ _id: cartId }, { $pull: { items: { productId: productId } },totalItems : totalItems }, { new: true });
+                    arr = cd.items
+                    totalItems = cd.totalItems
                 }
+
             }
         }
 
-        let datas = await cartModel.findOneAndUpdate({ _id: cartId }, { items: arr, totalPrice: totalAmount,totalItems:totalItems }, { new: true });
+        let datas = await cartModel.findOneAndUpdate({ _id: cartId }, { items: arr, totalPrice: totalAmount, totalItems: totalItems }, { new: true });
         return res.status(200).send({ status: true, message: `${productId} quantity is been reduced By 1`, data: datas });
     }
     if (removeProduct == 0) {
