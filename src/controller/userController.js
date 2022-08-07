@@ -76,7 +76,11 @@ const createUser = async function (req, res) {
 
 
 
-        if (file && file.length > 0) var uploadUrl = await uploadFile(file[0])
+        if (file && file.length > 0) {
+            if (file.length >1) return res.status(400).send({status : false, message : "More than One file cannot be uploaded"})
+            var uploadUrl = await uploadFile(file[0])
+        }
+        
 
 
         password = await bcrypt.hash(password, saltRounds)
@@ -227,10 +231,11 @@ const updateUser = async function (req, res) {
     }
 
     if (file && file.length > 0) {
-        let uploadUrl = await uploadFile(file[0])
+        if (file.length >1) return res.status(400).send({status : false, message : "More than One file cannot be uploaded"})
+        var uploadUrl = await uploadFile(file[0])
         obj.profileImage = uploadUrl
-
     }
+
 
     if (address) {
 
