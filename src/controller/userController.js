@@ -14,7 +14,7 @@ const createUser = async function (req, res) {
 
         let { fname, lname, email, phone, password, address } = userDetail
         let file = req.files
-        if (!address || address == '') return res.status(400).send({ status: false, message: "Please give full address of user" })
+        if (!address || address == '') return res.status(400).send({ status: false, message: "Please give the address of user" })
 
         address = JSON.parse(address)
         let { shipping, billing } = address
@@ -110,7 +110,7 @@ const createUser = async function (req, res) {
         return res.status(201).send({
             status: true,
             message: "User created successfully",
-            Data: savedUser
+            data: savedUser
         })
     }
     catch (err) {
@@ -164,7 +164,7 @@ const createLogin = async function (req, res) {
         })
     } else {
         return res.status(400).send({
-            status: true,
+            status: false,
             message: 'Wrong Password'
         })
     }
@@ -181,7 +181,7 @@ const getUser = async function (req, res) {
         if (!validator.isValidObjectId(userId)) return res.status(400).send({ status: false, message: "Please Enter Valid UserId." })
         let findUser = await userModel.findOne({ _id: userId })
         if (!findUser) return res.status(404).send({ status: false, message: "User Not Found" })
-        return res.status(200).send({ status: false, message: "User profile details", data: findUser })
+        return res.status(200).send({ status: true, message: "User profile details", data: findUser })
     }
     catch (err) {
         res.status(500).send({
@@ -271,7 +271,7 @@ const updateUser = async function (req, res) {
         { new: true }
     )
 
-    return res.status(200).send({ status: true, data: updatedUser })
+    return res.status(200).send({ status: true, message: "Success", data: updatedUser })
 }
 
 

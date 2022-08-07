@@ -6,18 +6,7 @@ const multer = require('multer')
 
 const app = express();
 app.use(bodyParser.json())
-app.use(multer({
-    fileFilter: (req, file, cb) =>{
-        if(file.mimetype == 'image/png' || file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg' || file.mimetype == 'image/jfif' ){
-            cb(null, true)
-        }
-        else{
-            cb(null, false)
-            return cb(new Error("Bad Request"))
-        } 
-
-     }
-}).any())
+app.use(multer().any())
 
 app.use((err,req,res,next) => {
     if(err.message == 'Bad Request')
