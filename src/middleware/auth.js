@@ -7,8 +7,9 @@ let decodedToken
 const authenticate = function (req, res, next) {
 
     try {
-        if (!token) res.status(400).send({ status: false, message: "Please enter token" })
-        token = req.headers.authorization.slice(7)
+        token = req.headers.authorization
+        if (!token) return res.status(400).send({ status: false, message: "Please enter token" })
+        token = token.slice(7)
         decodedToken = jwt.verify(token, "Project-5 product Management ", function(err,token){
             if(err){ return null}
               else{
