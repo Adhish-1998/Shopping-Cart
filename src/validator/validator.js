@@ -14,13 +14,11 @@ const isValidMobileNumber = function (mobile) {
     }
     return false;
 }
-const isValidEmail = function (email) {
-    let checkemail = /^\w+([\.-]?\w+)@[a-z]\w+([\.-]?\w+)(\.\w{2,3})+$/
-    if (checkemail.test(email)) {
-        return true;
-    }
-    return false;
-}
+const isValidEmail = function (v) {
+    v = v.toLowerCase();
+    return /^([0-9a-zA-Z]([-_\\.]*[0-9a-zA-Z]+)*)@([a-z]([-_\\.]*[a-z]+)*)[\\.]([a-z]{2,9})+$/.test(v);
+  };
+  
 const isValidObjectId = function (userId) {
     return mongoose.isValidObjectId(userId)
 }
