@@ -101,7 +101,7 @@ const getCart = async function (req, res) {
 
 
 const updateCart = async (req, res) => {
-    let { removeProduct, cartId, productId } = req.body
+    let {  productId, cartId, removeProduct  } = req.body
 
     if (removeProduct != 1 && removeProduct != 0) return res.status(400).send({ status: false, message: "Value of Removed Product Must be 0 or 1." })
 
@@ -150,6 +150,7 @@ const updateCart = async (req, res) => {
 
             let tPrice = cart.totalPrice - (arr[i].quantity * product.price)
             if (arr[i].productId.toString() == productId) {
+                if(arr.length == 0) console.log(hello)
                 let data = await cartModel.findOneAndUpdate({ _id: cartId }, { $pull: { items: { productId: productId } }, totalPrice: tPrice, totalItems: tItems }, { new: true });
                 return res.status(200).send({ status: true, message: 'Success', data : data});
 
